@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Today's Inspiration</title>
+    <!-- Use Tailwind CSS for a clean, modern, and responsive design -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
+    <div class="flex flex-col items-center max-w-lg w-full">
+        <!-- Main content card -->
+        <div class="bg-white p-8 md:p-10 rounded-3xl shadow-xl text-center w-full">
+            <h1 class="text-3xl md:text-4xl font-extrabold text-gray-800 mb-4">Today's Inspiration</h1>
+            
+            <!-- Category Buttons -->
+            <div class="flex flex-wrap justify-center gap-2 mb-6" id="category-buttons">
+                <button data-category="all" class="category-btn bg-purple-600 text-white font-medium py-2 px-4 rounded-full transition-colors duration-200">All</button>
+                <button data-category="motivational" class="category-btn bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-4 rounded-full transition-colors duration-200">Motivational</button>
+                <button data-category="inspiring" class="category-btn bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-4 rounded-full transition-colors duration-200">Inspiring</button>
+                <button data-category="happiness" class="category-btn bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-4 rounded-full transition-colors duration-200">Happiness</button>
+                <button data-category="love" class="category-btn bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-4 rounded-full transition-colors duration-200">Love</button>
+                <button data-category="sad" class="category-btn bg-gray-200 text-gray-700 hover:bg-gray-300 font-medium py-2 px-4 rounded-full transition-colors duration-300">Sad</button>
+            </div>
+
+            <!-- Search Input Field -->
+            <div class="w-full mb-6">
+                <input type="text" id="search-input" placeholder="Search for a quote or author..." class="w-full px-4 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition duration-300">
+            </div>
+
+            <!-- This is the container where the quotes will be displayed. -->
+            <div id="quote-container">
+                <!-- A single quote is displayed here by default -->
+                <blockquote class="text-xl md:text-2xl text-gray-700 leading-relaxed mb-6 italic" id="quote-text">
+                    "The only way to do great work is to love what you do."
+                </blockquote>
+                <p class="text-base md:text-lg text-gray-500 font-semibold" id="quote-author">
+                    - Steve Jobs
+                </p>
+            </div>
+            
+            <!-- Button to get a new quote -->
+            <button id="new-quote-btn" class="mt-8 bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-full shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50">
+                Get New Quote
+            </button>
+        </div>
+
+        <!-- This is the monetization section, clearly labeled as a placeholder for ads -->
+        <div class="bg-gray-200 p-4 md:p-6 rounded-2xl shadow-md text-center mt-6 w-full max-w-md">
+            <p class="text-gray-600 font-medium">Advertisement</p>
+            <!-- Start of the section where you will paste your ad code -->
+            <div class="mt-2 h-24 flex items-center justify-center rounded-lg">
+                <!-- 
+                    This is a placeholder for your ad unit code.
+                    You will get this code from an ad network like Google AdSense.
+                    The code typically looks like a <script> tag followed by an <ins> tag.
+                    You will replace this entire comment block with that code.
+                -->
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456"
+                    crossorigin="anonymous"></script>
+                <!-- My_Ad_Unit_1 -->
+                <ins class="adsbygoogle"
+                    style="display:block"
+                    data-ad-client="ca-pub-1234567890123456"
+                    data-ad-slot="1234567890"
+                    data-ad-format="auto"
+                    data-full-width-responsive="true"></ins>
+                <script>
+                    (adsbygoogle = window.adsbygoogle || []).push({});
+                </script>
+            </div>
+            <!-- End of the section for your ad code -->
+        </div>
+    </div>
+
+    <script>
+        // Quotes organized by category.
+        const quotesByCategory = {
+            all: [
+                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+                { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+                { text: "Tell me and I forget. Teach me and I remember. Involve me and I learn.", author: "Benjamin Franklin" },
+                { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+                { text: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
+                { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+                { text: "The best revenge is massive success.", author: "Frank Sinatra" },
+                { text: "Don't count the days, make the days count.", author: "Muhammad Ali" },
+                { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
+                { text: "It is never too late to be what you might have been.", author: "George Eliot" },
+                { text: "What you get by achieving your goals is not as important as what you become by achieving your goals.", author: "Zig Ziglar" },
+                { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+                { text: "I have not failed. I've just found 10,000 ways that won't work.", author: "Thomas A. Edison" },
+                { text: "If you can dream it, you can do it.", author: "Walt Disney" },
+                { text: "Keep your face always toward the sunshine—and shadows will fall behind you.", author: "Walt Whitman" },
+                { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+                { text: "You miss 100% of the shots you don’t take.", author: "Wayne Gretzky" },
+                { text: "The best way to predict the future is to create it.", author: "Peter Drucker" },
+                { text: "The road to success and the road to failure are almost exactly the same.", author: "Colin R. Davis" },
+                { text: "The only place where success comes before work is in the dictionary.", author: "Vidal Sassoon" },
+                { text: "Don't be afraid to give up the good to go for the great.", author: "John D. Rockefeller" },
+                { text: "Action is the foundational key to all success.", author: "Pablo Picasso" },
+                { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson" },
+                { text: "Nothing is impossible, the word itself says 'I'm possible'!", author: "Audrey Hepburn" },
+                { text: "I can't change the direction of the wind, but I can adjust my sails to always reach my destination.", author: "Jimmy Dean" },
+                { text: "Start where you are. Use what you have. Do what you can.", author: "Arthur Ashe" },
+                { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+                { text: "Setting goals is the first step in turning the invisible into the visible.", author: "Tony Robbins" },
+                { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+                { text: "The secret to living is giving.", author: "Tony Robbins" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey" },
+                { text: "The man who has confidence in himself gains the confidence of others.", author: "Hasidic Proverb" },
+                { text: "The only person you should try to be better than is the person you were yesterday.", author: "Anonymous" },
+                { text: "Patience, persistence, and perspiration make an unbeatable combination for success.", author: "Napoleon Hill" },
+                { text: "The difference between a successful person and others is not a lack of strength, not a lack of knowledge, but rather a lack of will.", author: "Vince Lombardi" },
+                { text: "The successful warrior is the average man, with laser-like focus.", author: "Bruce Lee" },
+                { text: "If you are not willing to risk the usual, you will have to settle for the ordinary.", author: "Jim Rohn" },
+                { text: "A goal is a dream with a deadline.", author: "Napoleon Hill" },
+                { text: "To be successful, you must accept all challenges that come your way. You can't just accept the ones you like.", author: "Mike Gafka" },
+                { text: "You can’t cross the sea merely by standing and staring at the water.", author: "Rabindranath Tagore" },
+                { text: "What the mind can conceive and believe, the mind can achieve.", author: "Napoleon Hill" },
+                { text: "The greatest danger for most of us is not that our aim is too high and we miss it, but that it is too low and we reach it.", author: "Michelangelo" },
+                { text: "It is better to fail in originality than to succeed in imitation.", author: "Herman Melville" },
+                { text: "The road to success is dotted with many tempting parking spaces.", author: "Will Rogers" },
+                { text: "The will to win, the desire to succeed, the urge to reach your full potential... these are the keys that will unlock the door to personal excellence.", author: "Confucius" },
+                { text: "The only thing standing between you and your goal is the story you keep telling yourself as to why you can't achieve it.", author: "Jordan Belfort" },
+                { text: "Start by doing what's necessary; then do what's possible; and suddenly you are doing the impossible.", author: "Francis of Assisi" },
+                { text: "Don't let yesterday take up too much of today.", author: "Will Rogers" },
+                { text: "The journey of a thousand miles begins with a single step.", author: "Lao Tzu" },
+                { text: "Hardships often prepare ordinary people for an extraordinary destiny.", author: "C.S. Lewis" },
+                { text: "There is no substitute for hard work.", author: "Thomas A. Edison" },
+                { text: "Success is a lousy teacher. It seduces smart people into thinking they can't lose.", author: "Bill Gates" },
+                { text: "If you want to achieve greatness stop asking for permission.", author: "Anonymous" },
+                { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
+                { text: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+                { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" },
+                { text: "The only source of knowledge is experience.", author: "Albert Einstein" },
+                { text: "The future depends on what you do today.", author: "Mahatma Gandhi" },
+                { text: "Change the world by being yourself.", author: "Amy Poehler" },
+                { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" },
+                { text: "The greatest discovery of all time is that a person can change his future by merely changing his attitude.", author: "Oprah Winfrey" },
+                { text: "The only way to achieve the impossible is to believe it is possible.", author: "Charles Kingsleigh" },
+                { text: "We can't solve problems by using the same kind of thinking we used when we created them.", author: "Albert Einstein" },
+                { text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+                { text: "We must be willing to let go of the life we have planned, so as to have the life that is waiting for us.", author: "Joseph Campbell" },
+                { text: "The secret of change is to focus all of your energy not on fighting the old, but on building the new.", author: "Socrates" },
+                { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+                { text: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
+                { text: "Do what you love, and you will never have to work a day in your life.", author: "Confucius" },
+                { text: "The journey is the reward.", author: "Steve Jobs" },
+                { text: "The mind is everything. What you think you become.", author: "Buddha" },
+                { text: "The best way out is always through.", author: "Robert Frost" },
+                { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+                { text: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
+                { text: "A great man is always willing to be little.", author: "Ralph Waldo Emerson" },
+                { text: "The greatest wealth is to live content with little.", author: "Plato" },
+                { text: "A happy person is not a person in a certain set of circumstances, but rather a person with a certain set of attitudes.", author: "Hugh Downs" },
+                { text: "Being deeply loved by someone gives you strength, while loving someone deeply gives you courage.", author: "Lao Tzu" },
+                { text: "A friend is someone who knows all about you and still loves you.", author: "Elbert Hubbard" },
+                { text: "Where there is love there is life.", author: "Mahatma Gandhi" },
+                { text: "The greatest thing you'll ever learn is just to love and be loved in return.", author: "Moulin Rouge!" },
+                { text: "To the world you may be one person, but to one person you may be the world.", author: "Dr. Seuss" },
+                { text: "Love all, trust a few, do wrong to none.", author: "William Shakespeare" },
+                { text: "The course of true love never did run smooth.", author: "William Shakespeare" },
+                { text: "We are shaped and fashioned by what we love.", author: "Johann Wolfgang von Goethe" },
+                { text: "Love me when I least deserve it, because that's when I really need it.", author: "Swedish Proverb" },
+                { text: "Love is the flower you've got to let grow.", author: "John Lennon" },
+                { text: "Let us always meet each other with smile, for the smile is the beginning of love.", author: "Mother Teresa" },
+                { text: "The heart wants what it wants. There's no logic to these things. You meet someone and you fall in love and that's that.", author: "Woody Allen" },
+                { text: "Keep love in your heart. A life without it is like a sunless garden when the flowers are dead.", author: "Oscar Wilde" },
+                { text: "You know you're in love when you can't fall asleep because reality is finally better than your dreams.", author: "Dr. Seuss" },
+                { text: "Sadness flies away on the wings of time.", author: "Jean de La Fontaine" },
+                { text: "A sad soul can kill you quicker, far quicker, than a germ.", author: "John Steinbeck" },
+                { text: "Every man has his secret sorrows which the world knows not; and often times we call a man cold when he is only sad.", author: "Henry Wadsworth Longfellow" },
+                { text: "Tears come from the heart and not from the brain.", author: "Leonardo da Vinci" },
+                { text: "Our greatest glory is not in never falling, but in rising every time we fall.", author: "Confucius" },
+                { text: "What we think, we become.", author: "Buddha" },
+                { text: "All that we are is the result of what we have thought.", author: "Buddha" },
+                { text: "The mind is everything. What you think you become.", author: "Buddha" },
+                { text: "If we could see the miracle of a single flower clearly, our whole life would change.", author: "Buddha" },
+                { text: "Peace comes from within. Do not seek it without.", author: "Buddha" },
+                { text: "The greatest test of courage on earth is to bear defeat without losing heart.", author: "Robert G. Ingersoll" },
+                { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+                { text: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer" },
+                { text: "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.", author: "Helen Keller" },
+                { text: "There is no limit to what a man can achieve, if he doesn't care who gets the credit.", author: "Mark Twain" },
+                { text: "We cannot become what we want by remaining what we are.", author: "Max DePree" },
+                { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson" },
+                { text: "If you want to achieve greatness, stop asking for permission.", author: "Anonymous" },
+                { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+                { text: "A champion is afraid of losing. Everyone else is afraid of winning.", author: "Billie Jean King" },
+                { text: "I have not failed. I've just found 10,000 ways that won't work.", author: "Thomas A. Edison" },
+                { text: "It's not whether you get knocked down, it's whether you get up.", author: "Vince Lombardi" },
+                { text: "What you lack in talent can be made up with desire, hustle, and giving 110% all the time.", author: "Don Zimmer" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey" },
+                { text: "Start by doing what's necessary; then do what's possible; and suddenly you are doing the impossible.", author: "Francis of Assisi" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+                { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+                { text: "The secret to living is giving.", author: "Tony Robbins" },
+                { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+                { text: "To be successful, you must accept all challenges that come your way. You can't just accept the ones you like.", author: "Mike Gafka" },
+                { text: "The only person you should try to be better than is the person you were yesterday.", author: "Anonymous" },
+                { text: "Patience, persistence and perspiration make an unbeatable combination for success.", author: "Napoleon Hill" },
+                { text: "The man who has confidence in himself gains the confidence of others.", author: "Hasidic Proverb" },
+                { text: "The will to win, the desire to succeed, the urge to reach your full potential... these are the keys that will unlock the door to personal excellence.", author: "Confucius" },
+                { text: "The successful warrior is the average man, with laser-like focus.", author: "Bruce Lee" },
+                { text: "If you are not willing to risk the usual, you will have to settle for the ordinary.", author: "Jim Rohn" },
+                { text: "A goal is a dream with a deadline.", author: "Napoleon Hill" },
+                { text: "If you want to achieve greatness stop asking for permission.", author: "Anonymous" },
+                { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
+                { text: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+                { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" }
+            ],
+            motivational: [
+                { text: "The only way to do great work is to love what you do.", author: "Steve Jobs" },
+                { text: "Success is not final, failure is not fatal: it is the courage to continue that counts.", author: "Winston Churchill" },
+                { text: "Believe you can and you're halfway there.", author: "Theodore Roosevelt" },
+                { text: "The best revenge is massive success.", author: "Frank Sinatra" },
+                { text: "Don't count the days, make the days count.", author: "Muhammad Ali" },
+                { text: "The only impossible journey is the one you never begin.", author: "Tony Robbins" },
+                { text: "The way to get started is to quit talking and begin doing.", author: "Walt Disney" },
+                { text: "I have not failed. I've just found 10,000 ways that won't work.", author: "Thomas A. Edison" },
+                { text: "If you can dream it, you can do it.", author: "Walt Disney" },
+                { text: "The secret of getting ahead is getting started.", author: "Mark Twain" },
+                { text: "Action is the foundational key to all success.", author: "Pablo Picasso" },
+                { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
+                { text: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+                { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" },
+                { text: "The only source of knowledge is experience.", author: "Albert Einstein" },
+                { text: "The future depends on what you do today.", author: "Mahatma Gandhi" },
+                { text: "Change the world by being yourself.", author: "Amy Poehler" },
+                { text: "It is during our darkest moments that we must focus to see the light.", author: "Aristotle" },
+                { text: "The greatest discovery of all time is that a person can change his future by merely changing his attitude.", author: "Oprah Winfrey" },
+                { text: "The only way to achieve the impossible is to believe it is possible.", author: "Charles Kingsleigh" },
+                { text: "We can't solve problems by using the same kind of thinking we used when we created them.", author: "Albert Einstein" },
+                { text: "Do what you can, with what you have, where you are.", author: "Theodore Roosevelt" },
+                { text: "We must be willing to let go of the life we have planned, so as to have the life that is waiting for us.", author: "Joseph Campbell" },
+                { text: "The secret of change is to focus all of your energy not on fighting the old, but on building the new.", author: "Socrates" },
+                { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+                { text: "The best way out is always through.", author: "Robert Frost" },
+                { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+                { text: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
+                { text: "A great man is always willing to be little.", author: "Ralph Waldo Emerson" },
+                { text: "The greatest wealth is to live content with little.", author: "Plato" },
+                { text: "A happy person is not a person in a certain set of circumstances, but rather a person with a certain set of attitudes.", author: "Hugh Downs" },
+                { text: "Success is getting what you want, happiness is wanting what you get.", author: "W. P. Kinsella" },
+                { text: "The best way to cheer yourself is to try to cheer somebody else up.", author: "Mark Twain" },
+                { text: "We are shaped and fashioned by what we love.", author: "Johann Wolfgang von Goethe" },
+                { text: "Love me when I least deserve it, because that's when I really need it.", author: "Swedish Proverb" },
+                { text: "Love is the flower you've got to let grow.", author: "John Lennon" },
+                { text: "Let us always meet each other with smile, for the smile is the beginning of love.", author: "Mother Teresa" },
+                { text: "The heart wants what it wants. There's no logic to these things. You meet someone and you fall in love and that's that.", author: "Woody Allen" },
+                { text: "Keep love in your heart. A life without it is like a sunless garden when the flowers are dead.", author: "Oscar Wilde" },
+                { text: "You know you're in love when you can't fall asleep because reality is finally better than your dreams.", author: "Dr. Seuss" },
+                { text: "A sad soul can kill you quicker, far quicker, than a germ.", author: "John Steinbeck" },
+                { text: "Every man has his secret sorrows which the world knows not; and often times we call a man cold when he is only sad.", author: "Henry Wadsworth Longfellow" },
+                { text: "Tears come from the heart and not from the brain.", author: "Leonardo da Vinci" },
+                { text: "Our greatest glory is not in never falling, but in rising every time we fall.", author: "Confucius" },
+                { text: "What we think, we become.", author: "Buddha" },
+                { text: "All that we are is the result of what we have thought.", author: "Buddha" },
+                { text: "The mind is everything. What you think you become.", author: "Buddha" },
+                { text: "If we could see the miracle of a single flower clearly, our whole life would change.", author: "Buddha" },
+                { text: "Peace comes from within. Do not seek it without.", author: "Buddha" },
+                { text: "The greatest test of courage on earth is to bear defeat without losing heart.", author: "Robert G. Ingersoll" },
+                { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+                { text: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer" },
+                { text: "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.", author: "Helen Keller" },
+                { text: "There is no limit to what a man can achieve, if he doesn't care who gets the credit.", author: "Mark Twain" },
+                { text: "We cannot become what we want by remaining what we are.", author: "Max DePree" },
+                { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson" },
+                { text: "If you want to achieve greatness, stop asking for permission.", author: "Anonymous" },
+                { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+                { text: "A champion is afraid of losing. Everyone else is afraid of winning.", author: "Billie Jean King" },
+                { text: "I have not failed. I've just found 10,000 ways that won't work.", author: "Thomas A. Edison" },
+                { text: "It's not whether you get knocked down, it's whether you get up.", author: "Vince Lombardi" },
+                { text: "What you lack in talent can be made up with desire, hustle, and giving 110% all the time.", author: "Don Zimmer" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey" },
+                { text: "Start by doing what's necessary; then do what's possible; and suddenly you are doing the impossible.", author: "Francis of Assisi" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+                { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+                { text: "The secret to living is giving.", author: "Tony Robbins" },
+                { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+                { text: "To be successful, you must accept all challenges that come your way. You can't just accept the ones you like.", author: "Mike Gafka" },
+                { text: "The only person you should try to be better than is the person you were yesterday.", author: "Anonymous" },
+                { text: "Patience, persistence and perspiration make an unbeatable combination for success.", author: "Napoleon Hill" },
+                { text: "The man who has confidence in himself gains the confidence of others.", author: "Hasidic Proverb" },
+                { text: "The will to win, the desire to succeed, the urge to reach your full potential... these are the keys that will unlock the door to personal excellence.", author: "Confucius" },
+                { text: "The successful warrior is the average man, with laser-like focus.", author: "Bruce Lee" },
+                { text: "If you are not willing to risk the usual, you will have to settle for the ordinary.", author: "Jim Rohn" },
+                { text: "A goal is a dream with a deadline.", author: "Napoleon Hill" },
+                { text: "If you want to achieve greatness stop asking for permission.", author: "Anonymous" },
+                { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
+                { text: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+                { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" }
+            ],
+            inspiring: [
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+                { text: "Tell me and I forget. Teach me and I remember. Involve me and I learn.", author: "Benjamin Franklin" },
+                { text: "The greatest glory in living lies not in never falling, but in rising every time we fall.", author: "Nelson Mandela" },
+                { text: "Keep your face always toward the sunshine—and shadows will fall behind you.", author: "Walt Whitman" },
+                { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+                { text: "It is our choices, Harry, that show what we truly are, far more than our abilities.", author: "J.K. Rowling" },
+                { text: "Life is what happens when you're busy making other plans.", author: "John Lennon" },
+                { text: "Do not go where the path may lead, go instead where there is no path and leave a trail.", author: "Ralph Waldo Emerson" },
+                { text: "The best way to find yourself is to lose yourself in the service of others.", author: "Mahatma Gandhi" },
+                { text: "We must be the change we wish to see in the world.", author: "Mahatma Gandhi" },
+                { text: "The only true wisdom is in knowing you know nothing.", author: "Socrates" },
+                { text: "Do what you love, and you will never have to work a day in your life.", author: "Confucius" },
+                { text: "The journey is the reward.", author: "Steve Jobs" },
+                { text: "The mind is everything. What you think you become.", author: "Buddha" },
+                { text: "The best way out is always through.", author: "Robert Frost" },
+                { text: "It does not matter how slowly you go as long as you do not stop.", author: "Confucius" },
+                { text: "You must be the change you wish to see in the world.", author: "Mahatma Gandhi" },
+                { text: "A great man is always willing to be little.", author: "Ralph Waldo Emerson" },
+                { text: "The greatest wealth is to live content with little.", author: "Plato" },
+                { text: "A happy person is not a person in a certain set of circumstances, but rather a person with a certain set of attitudes.", author: "Hugh Downs" },
+                { text: "Being deeply loved by someone gives you strength, while loving someone deeply gives you courage.", author: "Lao Tzu" },
+                { text: "A friend is someone who knows all about you and still loves you.", author: "Elbert Hubbard" },
+                { text: "Where there is love there is life.", author: "Mahatma Gandhi" },
+                { text: "The greatest thing you'll ever learn is just to love and be loved in return.", author: "Moulin Rouge!" },
+                { text: "To the world you may be one person, but to one person you may be the world.", author: "Dr. Seuss" },
+                { text: "Love all, trust a few, do wrong to none.", author: "William Shakespeare" },
+                { text: "The course of true love never did run smooth.", author: "William Shakespeare" },
+                { text: "We are shaped and fashioned by what we love.", author: "Johann Wolfgang von Goethe" },
+                { text: "Love me when I least deserve it, because that's when I really need it.", author: "Swedish Proverb" },
+                { text: "Love is the flower you've got to let grow.", author: "John Lennon" },
+                { text: "Let us always meet each other with smile, for the smile is the beginning of love.", author: "Mother Teresa" },
+                { text: "The heart wants what it wants. There's no logic to these things. You meet someone and you fall in love and that's that.", author: "Woody Allen" },
+                { text: "Keep love in your heart. A life without it is like a sunless garden when the flowers are dead.", author: "Oscar Wilde" },
+                { text: "You know you're in love when you can't fall asleep because reality is finally better than your dreams.", author: "Dr. Seuss" },
+                { text: "Sadness flies away on the wings of time.", author: "Jean de La Fontaine" },
+                { text: "A sad soul can kill you quicker, far quicker, than a germ.", author: "John Steinbeck" },
+                { text: "Every man has his secret sorrows which the world knows not; and often times we call a man cold when he is only sad.", author: "Henry Wadsworth Longfellow" },
+                { text: "Tears come from the heart and not from the brain.", author: "Leonardo da Vinci" },
+                { text: "Our greatest glory is not in never falling, but in rising every time we fall.", author: "Confucius" },
+                { text: "What we think, we become.", author: "Buddha" },
+                { text: "All that we are is the result of what we have thought.", author: "Buddha" },
+                { text: "The mind is everything. What you think you become.", author: "Buddha" },
+                { text: "If we could see the miracle of a single flower clearly, our whole life would change.", author: "Buddha" },
+                { text: "Peace comes from within. Do not seek it without.", author: "Buddha" },
+                { text: "The greatest test of courage on earth is to bear defeat without losing heart.", author: "Robert G. Ingersoll" },
+                { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+                { text: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer" },
+                { text: "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.", author: "Helen Keller" },
+                { text: "There is no limit to what a man can achieve, if he doesn't care who gets the credit.", author: "Mark Twain" },
+                { text: "We cannot become what we want by remaining what we are.", author: "Max DePree" },
+                { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson" },
+                { text: "If you want to achieve greatness, stop asking for permission.", author: "Anonymous" },
+                { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+                { text: "A champion is afraid of losing. Everyone else is afraid of winning.", author: "Billie Jean King" },
+                { text: "I have not failed. I've just found 10,000 ways that won't work.", author: "Thomas A. Edison" },
+                { text: "It's not whether you get knocked down, it's whether you get up.", author: "Vince Lombardi" },
+                { text: "What you lack in talent can be made up with desire, hustle, and giving 110% all the time.", author: "Don Zimmer" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey" },
+                { text: "Start by doing what's necessary; then do what's possible; and suddenly you are doing the impossible.", author: "Francis of Assisi" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+                { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+                { text: "The secret to living is giving.", author: "Tony Robbins" },
+                { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+                { text: "To be successful, you must accept all challenges that come your way. You can't just accept the ones you like.", author: "Mike Gafka" },
+                { text: "The only person you should try to be better than is the person you were yesterday.", author: "Anonymous" },
+                { text: "Patience, persistence and perspiration make an unbeatable combination for success.", author: "Napoleon Hill" },
+                { text: "The man who has confidence in himself gains the confidence of others.", author: "Hasidic Proverb" },
+                { text: "The will to win, the desire to succeed, the urge to reach your full potential... these are the keys that will unlock the door to personal excellence.", author: "Confucius" },
+                { text: "The successful warrior is the average man, with laser-like focus.", author: "Bruce Lee" },
+                { text: "If you are not willing to risk the usual, you will have to settle for the ordinary.", author: "Jim Rohn" },
+                { text: "A goal is a dream with a deadline.", author: "Napoleon Hill" },
+                { text: "If you want to achieve greatness stop asking for permission.", author: "Anonymous" },
+                { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
+                { text: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+                { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" }
+            ],
+            happiness: [
+                { text: "The only thing that will make you happy is being happy with who you are.", author: "Goldie Hawn" },
+                { text: "Happiness is a choice, not a result. Nothing will make you happy until you choose to be happy.", author: "Ralph Marston" },
+                { text: "The secret to happiness is freedom, and the secret to freedom is courage.", author: "Thucydides" },
+                { text: "For every minute you are angry you lose sixty seconds of happiness.", author: "Ralph Waldo Emerson" },
+                { text: "The purpose of our lives is to be happy.", author: "Dalai Lama" },
+                { text: "Success is getting what you want, happiness is wanting what you get.", author: "W. P. Kinsella" },
+                { text: "The best way to cheer yourself is to try to cheer somebody else up.", author: "Mark Twain" },
+                { text: "The greatest wealth is to live content with little.", author: "Plato" },
+                { text: "A happy person is not a person in a certain set of circumstances, but rather a person with a certain set of attitudes.", author: "Hugh Downs" },
+                { text: "Being deeply loved by someone gives you strength, while loving someone deeply gives you courage.", author: "Lao Tzu" },
+                { text: "A friend is someone who knows all about you and still loves you.", author: "Elbert Hubbard" },
+                { text: "Where there is love there is life.", author: "Mahatma Gandhi" },
+                { text: "The greatest thing you'll ever learn is just to love and be loved in return.", author: "Moulin Rouge!" },
+                { text: "To the world you may be one person, but to one person you may be the world.", author: "Dr. Seuss" },
+                { text: "Love all, trust a few, do wrong to none.", author: "William Shakespeare" },
+                { text: "The course of true love never did run smooth.", author: "William Shakespeare" },
+                { text: "We are shaped and fashioned by what we love.", author: "Johann Wolfgang von Goethe" },
+                { text: "Love me when I least deserve it, because that's when I really need it.", author: "Swedish Proverb" },
+                { text: "Love is the flower you've got to let grow.", author: "John Lennon" },
+                { text: "Let us always meet each other with smile, for the smile is the beginning of love.", author: "Mother Teresa" },
+                { text: "The heart wants what it wants. There's no logic to these things. You meet someone and you fall in love and that's that.", author: "Woody Allen" },
+                { text: "Keep love in your heart. A life without it is like a sunless garden when the flowers are dead.", author: "Oscar Wilde" },
+                { text: "You know you're in love when you can't fall asleep because reality is finally better than your dreams.", author: "Dr. Seuss" },
+                { text: "Sadness flies away on the wings of time.", author: "Jean de La Fontaine" },
+                { text: "A sad soul can kill you quicker, far quicker, than a germ.", author: "John Steinbeck" },
+                { text: "Every man has his secret sorrows which the world knows not; and often times we call a man cold when he is only sad.", author: "Henry Wadsworth Longfellow" },
+                { text: "Tears come from the heart and not from the brain.", author: "Leonardo da Vinci" },
+                { text: "Our greatest glory is not in never falling, but in rising every time we fall.", author: "Confucius" },
+                { text: "What we think, we become.", author: "Buddha" },
+                { text: "All that we are is the result of what we have thought.", author: "Buddha" },
+                { text: "The mind is everything. What you think you become.", author: "Buddha" },
+                { text: "If we could see the miracle of a single flower clearly, our whole life would change.", author: "Buddha" },
+                { text: "Peace comes from within. Do not seek it without.", author: "Buddha" },
+                { text: "The greatest test of courage on earth is to bear defeat without losing heart.", author: "Robert G. Ingersoll" },
+                { text: "It always seems impossible until it is done.", author: "Nelson Mandela" },
+                { text: "Success is not the key to happiness. Happiness is the key to success. If you love what you are doing, you will be successful.", author: "Albert Schweitzer" },
+                { text: "The best and most beautiful things in the world cannot be seen or even touched - they must be felt with the heart.", author: "Helen Keller" },
+                { text: "There is no limit to what a man can achieve, if he doesn't care who gets the credit.", author: "Mark Twain" },
+                { text: "We cannot become what we want by remaining what we are.", author: "Max DePree" },
+                { text: "The only person you are destined to become is the person you decide to be.", author: "Ralph Waldo Emerson" },
+                { text: "If you want to achieve greatness, stop asking for permission.", author: "Anonymous" },
+                { text: "The best time to plant a tree was 20 years ago. The second best time is now.", author: "Chinese Proverb" },
+                { text: "A champion is afraid of losing. Everyone else is afraid of winning.", author: "Billie Jean King" },
+                { text: "I have not failed. I've just found 10,000 ways that won't work.", author: "Thomas A. Edison" },
+                { text: "It's not whether you get knocked down, it's whether you get up.", author: "Vince Lombardi" },
+                { text: "What you lack in talent can be made up with desire, hustle, and giving 110% all the time.", author: "Don Zimmer" },
+                { text: "I am not a product of my circumstances. I am a product of my decisions.", author: "Stephen Covey" },
+                { text: "Start by doing what's necessary; then do what's possible; and suddenly you are doing the impossible.", author: "Francis of Assisi" },
+                { text: "The future belongs to those who believe in the beauty of their dreams.", author: "Eleanor Roosevelt" },
+                { text: "The only limit to our realization of tomorrow will be our doubts of today.", author: "Franklin D. Roosevelt" },
+                { text: "The secret to living is giving.", author: "Tony Robbins" },
+                { text: "It always seems impossible until it's done.", author: "Nelson Mandela" },
+                { text: "To be successful, you must accept all challenges that come your way. You can't just accept the ones you like.", author: "Mike Gafka" },
+                { text: "The only person you should try to be better than is the person you were yesterday.", author: "Anonymous" },
+                { text: "Patience, persistence and perspiration make an unbeatable combination for success.", author: "Napoleon Hill" },
+                { text: "The man who has confidence in himself gains the confidence of others.", author: "Hasidic Proverb" },
+                { text: "The will to win, the desire to succeed, the urge to reach your full potential... these are the keys that will unlock the door to personal excellence.", author: "Confucius" },
+                { text: "The successful warrior is the average man, with laser-like focus.", author: "Bruce Lee" },
+                { text: "If you are not willing to risk the usual, you will have to settle for the ordinary.", author: "Jim Rohn" },
+                { text: "A goal is a dream with a deadline.", author: "Napoleon Hill" },
+                { text: "If you want to achieve greatness stop asking for permission.", author: "Anonymous" },
+                { text: "Motivation is what gets you started. Habit is what keeps you going.", author: "Jim Ryun" },
+                { text: "You don’t have to be great to start, but you have to start to be great.", author: "Zig Ziglar" },
+                { text: "The man who moves a mountain begins by carrying away small stones.", author: "Confucius" }
+            ],
+            love: [
+                { text: "The greatest happiness of life is the conviction that we are loved; loved for ourselves, or rather, loved in spite of ourselves.", author: "Victor Hugo" },
+                { text: "Love is not about possession. Love is about appreciation.", author: "Osho" },
+                { text: "Love is a condition in which the happiness of another person is essential to your own.", author: "Robert A. Heinlein" },
+                { text: "To love and be loved is to feel the sun from both sides.", author: "David Viscott" },
+                { text: "Being deeply loved by someone gives you strength, while loving someone deeply gives you courage.", author: "Lao Tzu" },
+                { text: "A friend is someone who knows all about you and still loves you.", author: "Elbert Hubbard" },
+                { text: "Where there is love there is life.", author: "Mahatma Gandhi" },
+                { text: "The greatest thing you'll ever learn is just to love and be loved in return.", author: "Moulin Rouge!" },
+                { text: "To the world you may be one person, but to one person you may be the world.", author: "Dr. Seuss" },
+                { text: "Love all, trust a few, do wrong to none.", author: "William Shakespeare" },
+                { text: "The course of true love never did run smooth.", author: "William Shakespeare" },
+                { text: "We are shaped and fashioned by what we love.", author: "Johann Wolfgang von Goethe" },
+                { text: "Love me when I least deserve it, because that's when I really need it.", author: "Swedish Proverb" },
+                { text: "Love is the flower you've got to let grow.", author: "John Lennon" },
+                { text: "Let us always meet each other with smile, for the smile is the beginning of love.", author: "Mother Teresa" },
+                { text: "The heart wants what it wants. There's no logic to these things. You meet someone and you fall in love and that's that.", author: "Woody Allen" },
+                { text: "Keep love in your heart. A life without it is like a sunless garden when the flowers are dead.", author: "Oscar Wilde" },
+                { text: "You know you're in love when you can't fall asleep because reality is finally better than your dreams.", author: "Dr. Seuss" },
+                { text: "Love is a battlefield.", author: "Pat Benatar" },
+                { text: "Love is a canvas furnished by nature and embroidered by imagination.", author: "Voltaire" },
+                { text: "Love looks not with the eyes, but with the mind, and therefore is winged Cupid painted blind.", author: "William Shakespeare" },
+                { text: "Love is an irresistible desire to be irresistibly desired.", author: "Robert Frost" },
+                { text: "The best and most beautiful things in this world cannot be seen or even heard, but must be felt with the heart.", author: "Helen Keller" },
+                { text: "There is no remedy for love but to love more.", author: "Henry David Thoreau" },
+                { text: "To be brave is to love someone unconditionally, without expecting anything in return.", author: "Madonna" },
+                { text: "Love is the greatest refreshment in life.", author: "Pablo Picasso" },
+                { text: "Love is composed of a single soul inhabiting two bodies.", author: "Aristotle" },
+                { text: "The only thing we never get enough of is love; and the only thing we never give enough of is love.", author: "Henry Miller" },
+                { text: "All you need is love. But a little chocolate now and then doesn't hurt.", author: "Charles M. Schulz" },
+                { text: "Love is the master key that opens the gates of happiness.", author: "Oliver Wendell Holmes Sr." },
+                { text: "Love is the poetry of the senses.", author: "Honoré de Balzac" },
+                { text: "We are most alive when we're in love.", author: "John Updike" },
+                { text: "Love is a fire. But whether it is going to warm your hearth or burn down your house, you can never tell.", author: "Joan Crawford" },
+                { text: "Love is a serious mental disease.", author: "Plato" },
+                { text: "The only thing that I'm afraid of is that you're going to stop loving me.", author: "John Mayer" },
+                { text: "Love is like a beautiful flower which I may not touch, but whose fragrance makes the garden a paradise.", author: "Helen Keller" },
+                { text: "Love is an untamed force. When we try to control it, it destroys us. When we try to imprison it, it enslaves us. When we try to understand it, it leaves us feeling lost and confused.", author: "Paulo Coelho" },
+                { text: "Love is that condition in which the happiness of another person is essential to your own.", author: "Robert A. Heinlein" },
+                { text: "The ultimate love is when you can love yourself, even when you feel unlovable.", author: "Anonymous" },
+                { text: "Love is not just looking at each other, it's looking in the same direction.", author: "Antoine de Saint-Exupéry" },
+                { text: "Love is like the wind, you can't see it but you can feel it.", author: "Nicholas Sparks" },
+                { text: "Love is the only gold.", author: "Alfred Lord Tennyson" },
+                { text: "Where there is love, there is life.", author: "Mahatma Gandhi" },
+                { text: "Love is the triumph of imagination over intelligence.", author: "H. L. Mencken" },
+                { text: "Love is the only force capable of transforming an enemy into a friend.", author: "Martin Luther King Jr." },
+                { text: "The best thing to hold onto in life is each other.", author: "Audrey Hepburn" },
+                { text: "Love is a game that two can play and both can win.", author: "Eva Gabor" },
+                { text: "Love is a smoke made with the fume of sighs.", author: "William Shakespeare" },
+                { text: "Love is an act of endless forgiveness, a tender look which becomes a habit.", author: "Peter Ustinov" },
+                { text: "The heart that loves is always young.", author: "Anonymous" }
+            ],
+            sad: [
+                { text: "Tears come from the heart and not from the brain.", author: "Leonardo da Vinci" },
+                { text: "Every man has his secret sorrows which the world knows not; and often times we call a man cold when he is only sad.", author: "Henry Wadsworth Longfellow" },
+                { text: "It is better to have loved and lost than never to have loved at all.", author: "Alfred Lord Tennyson" },
+                { text: "The word 'happy' would lose its meaning if it were not balanced by sadness.", author: "Carl Jung" },
+                { text: "Sadness flies away on the wings of time.", author: "Jean de La Fontaine" },
+                { text: "A sad soul can kill you quicker, far quicker, than a germ.", author: "John Steinbeck" },
+                { text: "The walls we build around us to keep sadness out also keep out the joy.", author: "Jim Rohn" },
+                { text: "The biggest lie I tell myself is 'I'm fine'.", author: "Anonymous" },
+                { text: "The sun always shines brightest after a storm.", author: "Anonymous" },
+                { text: "Don’t let yesterday take up too much of today.", author: "Will Rogers" },
+                { text: "It is sad not to love, but it is much sadder not to be able to love.", author: "Miguel de Unamuno" },
+                { text: "The greatest pain that comes from love is loving someone you can never have.", author: "Anonymous" },
+                { text: "Sadness is a feeling, but unhappiness is a choice.", author: "Anonymous" },
+                { text: "It is better to be a human being dissatisfied than a pig satisfied; better to be Socrates dissatisfied than a fool satisfied.", author: "John Stuart Mill" },
+                { text: "Every human has his secret sorrows.", author: "Henry Wadsworth Longfellow" },
+                { text: "The worst feeling in the world is when you can't even cry.", author: "Anonymous" },
+                { text: "Sorrow is a fruit. God does not make it grow on a branch that is too weak to bear it.", author: "Victor Hugo" },
+                { text: "Behind every beautiful thing, there's some kind of pain.", author: "Bob Dylan" },
+                { text: "The hardest part of a breakup is not the loss of the person, but the loss of the future you had with them.", author: "Anonymous" },
+                { text: "Grief is a ghost. It haunts you and makes you do things you never thought you'd do.", author: "Anonymous" },
+                { text: "Tears are words that need to be written.", author: "Paulo Coelho" },
+                { text: "The sad part is that I will probably never tell you what I'm feeling.", author: "Anonymous" },
+                { text: "I have learned to be happy because I have known sadness.", author: "Anonymous" },
+                { text: "The hardest thing is to see someone you love, love someone else.", author: "Anonymous" },
+                { text: "The worst kind of pain is when you're smiling to stop the tears from falling.", author: "Anonymous" },
+                { text: "The most painful goodbyes are the ones that are never said and never explained.", author: "Anonymous" },
+                { text: "I don't think you can love someone else until you've learned to love yourself.", author: "Anonymous" },
+                { text: "It's hard to forget someone who gave you so much to remember.", author: "Anonymous" },
+                { text: "The saddest part of life is not a sad goodbye, but not knowing if you'll see them again.", author: "Anonymous" },
+                { text: "Sadness is a quiet and private moment.", author: "Anonymous" },
+                { text: "The sun shines for a few minutes, but the rain stays for hours.", author: "Anonymous" },
+                { text: "I'm not crying because I'm sad, it's just a little bit of dust from the memories.", author: "Anonymous" },
+                { text: "The most painful memory is the one I never made with you.", author: "Anonymous" },
+                { text: "I've learned that you can't make someone love you. All you can do is be someone who can be loved. The rest is up to them.", author: "Anonymous" },
+                { text: "I'm so tired of being strong.", author: "Anonymous" },
+                { text: "I'm not broken, but I'm not whole either.", author: "Anonymous" },
+                { text: "It hurts the most when the person who made you feel special yesterday, makes you feel so unwanted today.", author: "Anonymous" },
+                { text: "The sun rises, the sun sets, but the sadness never goes away.", author: "Anonymous" },
+                { text: "I'm not sad, I'm just empty inside.", author: "Anonymous" },
+                { text: "The pain is a part of me, but I am not the pain.", author: "Anonymous" },
+                { text: "The scars are a reminder of where I've been, but they don't define who I am.", author: "Anonymous" },
+                { text: "I'm still here, but a part of me is gone.", author: "Anonymous" },
+                { text: "The hardest thing about losing someone is not the goodbye, but learning to live without them.", author: "Anonymous" },
+                { text: "The most beautiful people are the ones who have known defeat, known suffering, known struggle, known loss, and have found their way out of the depths.", author: "Elisabeth Kubler-Ross" },
+                { text: "The greatest love is the love of a mother, and the greatest sadness is the loss of one.", author: "Anonymous" },
+                { text: "I'm not crying, I'm just getting a little rain on my face.", author: "Anonymous" },
+                { text: "The more I love, the more I hurt.", author: "Anonymous" },
+                { text: "The greatest sadness is not being able to say what you feel.", author: "Anonymous" },
+                { text: "The only thing worse than being lonely is being with someone who makes you feel lonely.", author: "Anonymous" },
+                { text: "The saddest truth is that a lie told to you is never a lie, it's a lie to you.", author: "Anonymous" }
+            ]
+        };
+
+        // Get elements from the DOM
+        const quoteText = document.getElementById('quote-text');
+        const quoteAuthor = document.getElementById('quote-author');
+        const newQuoteBtn = document.getElementById('new-quote-btn');
+        const searchInput = document.getElementById('search-input');
+        const categoryButtons = document.getElementById('category-buttons');
+
+        let currentCategory = 'all';
+        let currentQuotes = quotesByCategory.all;
+        let isSearching = false;
+
+        // Function to display a single quote
+        function displayQuote(quote) {
+            quoteText.textContent = `"${quote.text}"`;
+            quoteAuthor.textContent = `- ${quote.author}`;
+        }
+
+        // Function to get and display a new quote from the current category or search results
+        function getNewQuote() {
+            const randomIndex = Math.floor(Math.random() * currentQuotes.length);
+            displayQuote(currentQuotes[randomIndex]);
+        }
+        
+        // Function to handle the search logic
+        function searchQuotes(event) {
+            const searchTerm = event.target.value.toLowerCase();
+            
+            // If the search bar is empty, switch back to the current category and display a random quote.
+            if (searchTerm === '') {
+                isSearching = false;
+                currentQuotes = quotesByCategory[currentCategory];
+                getNewQuote();
+                return;
+            }
+
+            // Filter quotes based on the search term
+            const allQuotes = quotesByCategory.all;
+            const filteredQuotes = allQuotes.filter(quote => 
+                quote.text.toLowerCase().includes(searchTerm) || 
+                quote.author.toLowerCase().includes(searchTerm)
+            );
+
+            // Set the current quotes to the filtered list
+            currentQuotes = filteredQuotes;
+            isSearching = true;
+
+            // If quotes are found, display a random one. Otherwise, show a 'not found' message.
+            if (filteredQuotes.length > 0) {
+                const randomIndex = Math.floor(Math.random() * currentQuotes.length);
+                displayQuote(currentQuotes[randomIndex]);
+            } else {
+                displayQuote({
+                    text: "No quotes found. Try another search!",
+                    author: "AI Assistant"
+                });
+            }
+        }
+
+        // Function to handle category button clicks
+        function handleCategoryClick(event) {
+            const clickedBtn = event.target;
+            if (clickedBtn.classList.contains('category-btn')) {
+                // Reset the search input and searching state
+                searchInput.value = '';
+                isSearching = false;
+
+                // Update the category and highlight the active button
+                const newCategory = clickedBtn.dataset.category;
+                currentCategory = newCategory;
+                currentQuotes = quotesByCategory[newCategory];
+
+                // Remove highlight from all buttons
+                document.querySelectorAll('.category-btn').forEach(btn => {
+                    btn.classList.remove('bg-purple-600', 'text-white');
+                    btn.classList.add('bg-gray-200', 'text-gray-700');
+                });
+                // Add highlight to the clicked button
+                clickedBtn.classList.remove('bg-gray-200', 'text-gray-700');
+                clickedBtn.classList.add('bg-purple-600', 'text-white');
+
+                // Display a new quote from the selected category
+                getNewQuote();
+            }
+        }
+        
+        // Add event listeners
+        newQuoteBtn.addEventListener('click', getNewQuote);
+        searchInput.addEventListener('input', searchQuotes);
+        categoryButtons.addEventListener('click', handleCategoryClick);
+        
+        // Call the function on page load to show a starting quote
+        window.onload = getNewQuote;
+    </script>
+</body>
+</html>
